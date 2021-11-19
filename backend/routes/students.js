@@ -2,8 +2,8 @@ import express from "express";
 import { v4 as uuid } from "uuid";
 import { studentsData } from "../data/studentsData.js";
 import jwt from "jsonwebtoken";
-import {verifyToken} from "./auth.js";
-import _ from 'lodash';
+import { verifyToken } from "./auth.js";
+import _ from "lodash";
 
 const router = express.Router();
 
@@ -16,19 +16,22 @@ router.get("/", (req, res) => {
 });
 
 //return paginated student list
-router.get("/list", (req, res)=>{
-  let {page, size} = req.query
-  page = page || 1
-  size = size || 10
+router.get("/list", (req, res) => {
+  let { page, size } = req.query;
+  page = page || 1;
+  size = size || 10;
 
   const limit = parseInt(size);
   const skip = (parseInt(page) - 1) * limit;
-  const studentIndices = Object.getOwnPropertyNames(dataInstance).slice(skip, skip+limit);
-  const studentList = _.pick(dataInstance, studentIndices)
-  const pageCount = Math.ceil(_.size(dataInstance)/limit)
-  console.log(pageCount)
-  res.json(studentList)
-})
+  const studentIndices = Object.getOwnPropertyNames(dataInstance).slice(
+    skip,
+    skip + limit
+  );
+  const studentList = _.pick(dataInstance, studentIndices);
+  const pageCount = Math.ceil(_.size(dataInstance) / limit);
+
+  res.json(studentList);
+});
 
 //add a new student
 router.post("/", verifyToken, (req, res) => {
@@ -54,7 +57,7 @@ router.put("/:id/courses", verifyToken, (req, res) => {
     else {
       const id = req.body.id;
       dataInstance[id].coursesTaken = req.body.coursesTaken;
-      res.end(`Changed courses of ${dataInstance[id].name}`);
+      res.json(`Changed courses of ${dataInstance[id].name}`);
     }
   });
 });
@@ -66,7 +69,8 @@ router.delete("/", verifyToken, (req, res) => {
     else {
       const { [req.body.id]: data, ...otherStudents } = dataInstance;
       dataInstance = otherStudents;
-      res.end(`Deleted student ${data.name}`);
+      res.json(`Deleted student`);
+      console.log(dataInstance)
     }
   });
 });

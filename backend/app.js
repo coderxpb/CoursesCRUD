@@ -4,6 +4,7 @@ import "dotenv/config";
 import { coursesRouter } from "./routes/courses.js";
 import { studentsRouter } from "./routes/students.js";
 import { authRouter } from "./routes/auth.js";
+import nocache from 'nocache';
 
 const app = express();
 app.use(cors());
