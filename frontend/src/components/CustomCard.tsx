@@ -6,7 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 interface IProps {
   children: string | ReactElement | ReactElement[]
   onCardClicked?(): void
-  onDeleteClicked(): void
+  onDeleteClicked?(): void
 }
 
 //custom cards with delete button. also supports on click(optional)
