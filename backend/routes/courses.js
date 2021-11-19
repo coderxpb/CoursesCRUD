@@ -1,30 +1,32 @@
 import express from "express";
 import {v4 as uuid} from "uuid";
-import {coursesData} from "../data/coursesData";
+import {coursesData} from "../data/coursesData.js";
 
 const router = express.Router();
 
 //create a temporary instance of coursesData in order
-let coursesDataInstance = coursesData;
+let dataInstance = coursesData;
 
-//return json of all the courses
+//return json containing all the courses
 router.get("/", (req, res)=>{
-    res.json(coursesDataInstance);
+    res.json(dataInstance);
 })
 
 //add a new course
 router.post("/", (req, res)=>{
     const id = uuid();
-    coursesDataInstance[id]={
+    dataInstance[id]={
         id,
         name: req.body.name
     };
+    res.end(`Added new course ${req.body.name}`)
 })
 
 //delete course
 router.delete("/", (req, res)=>{
-    const {[req.body.id]: data, ...otherCourses} = coursesDataInstance;
-    coursesDataInstance = otherCourses;
+    const {[req.body.id]: data, ...otherCourses} = dataInstance;
+    dataInstance = otherCourses;
+    res.end(`Deleted course ${data.name}`)
 })
 
 export {router as coursesRouter}
