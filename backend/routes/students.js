@@ -3,6 +3,7 @@ import { v4 as uuid } from "uuid";
 import { studentsData } from "../data/studentsData.js";
 import jwt from "jsonwebtoken";
 import {verifyToken} from "./auth.js";
+import _ from 'lodash';
 
 const router = express.Router();
 
@@ -13,6 +14,19 @@ let dataInstance = studentsData;
 router.get("/", (req, res) => {
   res.json(dataInstance);
 });
+
+//return paginated student list
+router.get("/list", (req, res)=>{
+  let {page, size} = req.query
+  page = page || 1
+  size = size || 10
+
+  const limit = parseInt(size);
+  const skip = (parseInt(page) - 1) * limit;
+  const studentIndices = Object.getOwnPropertyNames(dataInstance).slice(skip, skip+limit);
+  const studentList = _.pick(dataInstance, studentIndices)
+  res.json(studentList)
+})
 
 //add a new student
 router.post("/", verifyToken, (req, res) => {
