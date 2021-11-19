@@ -1,12 +1,11 @@
-import { Box, Stack, Typography } from '@mui/material'
-import { CustomCard } from '../components/CustomCard'
+
 import { StudentsList } from '../templates/StudentsList'
+import { Container } from '@mui/material'
 
 export const HomePage = () => {
   return (
-    <Stack>
-      <Typography>Hey</Typography>
+    <Container sx={{paddingTop: 5}}>
       <StudentsList/>
-    </Stack>
+    </Container>
   )
 }

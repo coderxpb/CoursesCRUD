@@ -1,55 +1,68 @@
-import { getRequest } from '../services/httpHandlers'
-import { useEffect, useState } from 'react'
-import { CustomCard } from '../components/CustomCard'
-import { IStudent } from '../interfaces/IStudent'
-import { deleteRequest } from '../services/httpHandlers'
+import { getRequest } from '../services/httpHandlers';
+import { useEffect, useState } from 'react';
+import { CustomCard } from '../components/CustomCard';
+import { IStudent } from '../interfaces/IStudent';
+import { deleteRequest } from '../services/httpHandlers';
+import { Pagination, Stack, Typography } from '@mui/material';
+import React from 'react';
 
 export const StudentsList = () => {
-  const [pageCount, setPageCount] = useState(1)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
-  const [loadStudents, setLoadStudents] = useState(true)
-  const [studentList, setStudentList] = useState<Record<string, IStudent>>()
-  const [studentListKeys, setStudentListKeys] = useState<string[]>()
+  const [pageCount, setPageCount] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [loadStudents, setLoadStudents] = useState(true);
+  const [studentList, setStudentList] = useState<Record<string, IStudent>>();
+  const [studentListKeys, setStudentListKeys] = useState<string[]>();
 
-  const cardClicked = () => console.log('clicked')
+  const studentCardClicked = () => console.log('clicked');
+
+  const changePage = (e: React.ChangeEvent<unknown>, value: number) => {
+    setCurrentPage(value);
+    setLoadStudents(true);
+  };
 
   //delete a student and refetch list
   const deleteClicked = (id: string) => {
     deleteRequest('/students', { id }).then(data => {
-      setLoadStudents(true)
-    })
-  }
+      setLoadStudents(true);
+    });
+  };
 
   //fetch students list data to be displayed in current page
   useEffect(() => {
-    console.log('loading triggered')
     if (loadStudents) {
-      ;(async () => {
-        console.log('here')
+      (async () => {
         const data = await getRequest('/students/list', {
           size: pageSize,
           page: currentPage,
-        })
-        setStudentListKeys(Object.getOwnPropertyNames(data))
-        setStudentList(data)
-
-        setLoadStudents(false)
-      })()
+        });
+        setStudentListKeys(Object.getOwnPropertyNames(data.studentList));
+        setStudentList(data.studentList);
+        setPageCount(data.pageCount);
+        setLoadStudents(false);
+      })();
     }
-  }, [loadStudents])
+  }, [loadStudents]);
 
   return (
     <>
-      {loadStudents
-        ? 'loading'
-        : studentListKeys && studentList
-        ? studentListKeys.map(key => (
-            <CustomCard key={key} id={key} onDeleteClicked={deleteClicked}>
-              {studentList[key].name}
-            </CustomCard>
-          ))
-        : 'data corrupted'}
+      <Stack spacing={3}>
+        {studentListKeys && studentList && !loadStudents
+          ? studentListKeys.map(key => (
+              <CustomCard key={key} id={key} onDeleteClicked={deleteClicked}>
+                <Typography sx={{ fontSize: 20 }}>{studentList[key].name}</Typography>
+              </CustomCard>
+            ))
+          : 'loading'}
+      </Stack>
+      {!loadStudents && (
+        <Pagination
+          count={pageCount}
+          page={currentPage}
+          onChange={changePage}
+          sx={{ display: 'flex', justifyContent: 'center', paddingTop: 2 }}
+        />
+      )}
     </>
-  )
-}
+  );
+};
