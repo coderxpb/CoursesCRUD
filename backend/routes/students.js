@@ -30,7 +30,7 @@ router.get("/list", (req, res) => {
   const studentList = _.pick(dataInstance, studentIndices);
   const pageCount = Math.ceil(_.size(dataInstance) / limit);
 
-  res.json(studentList);
+  res.json({studentList, pageCount});
 });
 
 //add a new student
@@ -70,7 +70,7 @@ router.delete("/", verifyToken, (req, res) => {
       const { [req.body.id]: data, ...otherStudents } = dataInstance;
       dataInstance = otherStudents;
       res.json(`Deleted student`);
-      console.log(dataInstance)
+
     }
   });
 });
