@@ -25,6 +25,8 @@ router.get("/list", (req, res)=>{
   const skip = (parseInt(page) - 1) * limit;
   const studentIndices = Object.getOwnPropertyNames(dataInstance).slice(skip, skip+limit);
   const studentList = _.pick(dataInstance, studentIndices)
+  const pageCount = Math.ceil(_.size(dataInstance)/limit)
+  console.log(pageCount)
   res.json(studentList)
 })
 
