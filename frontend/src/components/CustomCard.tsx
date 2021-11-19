@@ -5,7 +5,7 @@ import { IStudent } from '../interfaces/IStudent';
 import { usePage } from '../contexts/pageContext';
 
 interface ICustomCard {
-  children: string | ReactElement | ReactElement[];
+  children?: string | ReactElement | ReactElement[];
   onDeleteClicked(e: React.SyntheticEvent, id: any): void;
 }
 
@@ -50,12 +50,12 @@ export const StudentCard = (props: IStudentCard) => {
 
 //custom subject card
 export const SubjectCard = (props: ISubjectCard) => {
-  const { children, onDeleteClicked, name, id } = props;
+  const { onDeleteClicked, name, id } = props;
   return (
     <Card sx={{ background: 'lavender', maxWidth: 300 }}>
       <Stack direction={'row'} sx={{ justifyContent: 'space-between' }}>
         <CardContent sx={{ background: 'powderblue', width: '100%' }}>
-          {children}
+          {name}
         </CardContent>
         <IconButton
           disableRipple

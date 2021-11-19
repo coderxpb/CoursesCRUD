@@ -7,7 +7,7 @@ type pageType = 'list' | 'profile';
 interface ContextType {
   currentPage: pageType;
   setCurrentPage(page: pageType): void;
-  studentProfile: IStudent | undefined;
+  studentProfile: IStudent;
   setStudentProfile(student: IStudent): void;
 }
 
@@ -15,7 +15,7 @@ const PageContext = createContext<ContextType>({} as ContextType);
 
 const PageContextProvider = ({ children }: { children: ReactElement }) => {
   const [currentPage, setCurrentPage] = useState<pageType>('list');
-  const [studentProfile, setStudentProfile] = useState<IStudent>();
+  const [studentProfile, setStudentProfile] = useState<IStudent>({id: '', name: '', coursesTaken: []});
 
   return (
     <PageContext.Provider

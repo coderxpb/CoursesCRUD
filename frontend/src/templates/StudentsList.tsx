@@ -24,12 +24,14 @@ export const StudentsList = () => {
   };
 
   //delete a student and refetch list
-  const deleteClicked = (e: React.SyntheticEvent,id: string) => {
+  const deleteClicked = (e: React.SyntheticEvent, id: string) => {
     e.preventDefault();
     deleteRequest('/students', { id }).then(data => {
       setLoadStudents(true);
     });
   };
+
+
 
   //fetch students list data to be displayed in current page
   useEffect(() => {
@@ -56,7 +58,9 @@ export const StudentsList = () => {
                 key={key}
                 studentData={studentList[key]}
                 onDeleteClicked={deleteClicked}>
-                <Typography sx={{ fontSize: 20 }}>{studentList[key].name}</Typography>
+                <Typography sx={{ fontSize: 20 }}>
+                  {studentList[key].name}
+                </Typography>
               </StudentCard>
             ))
           : ''}
@@ -66,7 +70,12 @@ export const StudentsList = () => {
           count={pageCount}
           page={currentPage}
           onChange={changePage}
-          sx={{ display: 'flex', justifyContent: 'center', paddingTop: 2, maxWidth: 600 }}
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            paddingTop: 2,
+            maxWidth: 600,
+          }}
         />
       )}
     </Container>

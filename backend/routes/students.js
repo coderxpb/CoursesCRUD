@@ -30,7 +30,7 @@ router.get("/list", (req, res) => {
   const studentList = _.pick(dataInstance, studentIndices);
   const pageCount = Math.ceil(_.size(dataInstance) / limit);
 
-  res.json({studentList, pageCount});
+  res.json({ studentList, pageCount });
 });
 
 //add a new student
@@ -50,8 +50,20 @@ router.post("/", verifyToken, (req, res) => {
   });
 });
 
-//modify coursesTaken by a specific student
-router.put("/:id/courses", verifyToken, (req, res) => {
+//delete student
+router.delete("/", verifyToken, (req, res) => {
+  jwt.verify(req.token, process.env.SECRET_KEY, (error) => {
+    if (error) res.sendStatus(403);
+    else {
+      const { [req.body.id]: data, ...otherStudents } = dataInstance;
+      dataInstance = otherStudents;
+      res.json(`Deleted student`);
+    }
+  });
+});
+
+//modify coursesTaken by a student
+router.put("/courses", verifyToken, (req, res) => {
   jwt.verify(req.token, process.env.SECRET_KEY, (error) => {
     if (error) res.sendStatus(403);
     else {
@@ -62,17 +74,42 @@ router.put("/:id/courses", verifyToken, (req, res) => {
   });
 });
 
-//delete student
-router.delete("/", verifyToken, (req, res) => {
+//remove a specific course taken by a student
+router.delete("/courses", verifyToken, (req, res) => {
   jwt.verify(req.token, process.env.SECRET_KEY, (error) => {
     if (error) res.sendStatus(403);
     else {
-      const { [req.body.id]: data, ...otherStudents } = dataInstance;
-      dataInstance = otherStudents;
-      res.json(`Deleted student`);
 
+      const studentID = req.body.studentID;
+      const courseID = req.body.courseID;
+      const updatedCourses = dataInstance[studentID].coursesTaken.filter(
+        (n) => n !== courseID
+      );
+      dataInstance[studentID].coursesTaken = updatedCourses;
+
+      res.json(`Changed courses of ${dataInstance[studentID].name}`);
     }
   });
 });
+
+//add a specific course to a student
+router.post("/courses", verifyToken, (req, res) => {
+  jwt.verify(req.token, process.env.SECRET_KEY, (error) => {
+    if (error) res.sendStatus(403);
+    else {
+      const studentID = req.body.studentID;
+      const courseID = req.body.courseID;
+      if (!dataInstance[studentID].coursesTaken.includes(courseID))
+        dataInstance[studentID].coursesTaken.push(courseID);
+      res.json(`Changed courses of ${dataInstance[studentID].name}`);
+    }
+  });
+});
+
+//get courses of a specific student
+router.get('/courses',(req, res)=>{
+  const id = req.query.id;
+  res.json(dataInstance[id].coursesTaken)
+})
 
 export { router as studentsRouter };

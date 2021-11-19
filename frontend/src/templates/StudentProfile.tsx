@@ -1,22 +1,52 @@
 import { Button, Stack, Typography } from '@mui/material';
 import { usePage } from '../contexts/pageContext';
-import {CourseRenderer} from '../utils/CourseRenderer';
+import { CourseRenderer } from '../utils/CourseRenderer';
+import { useEffect, useState } from 'react';
+import { deleteRequest, getRequest } from '../utils/httpHandlers';
 
 export const StudentProfile = () => {
   const { studentProfile, setCurrentPage } = usePage();
-  //remove only the courses taken lel
+  const [coursesTaken, setCoursesTaken] = useState<number[]|string[]>();
+  const [loadCoursesTaken, setLoadCoursesTaken] = useState(true);
+  const [availableCourses, setAvailableCourses] = useState();
 
-  const removeCourseFromStudent = (id) => coursesTaken
+  const removeCourseFromStudent = (courseID: string | number) => {
+    deleteRequest('/students/courses', {
+      studentID: studentProfile.id,
+      courseID,
+    }).then(data => {
+      setLoadCoursesTaken(true);
+    });
+  };
+
+  //load courses taken by the student
+  useEffect(() => {
+    if (loadCoursesTaken) {
+      (async () => {
+        const data = await getRequest('/students/courses', {
+          id: studentProfile.id,
+        });
+        console.log(data)
+        setCoursesTaken(data);
+        setLoadCoursesTaken(false);
+      })();
+    }
+  }, [loadCoursesTaken]);
 
   return (
     <>
       <Button onClick={() => setCurrentPage('list')}>Back</Button>
-      {studentProfile && (
+      {studentProfile && coursesTaken?
         <Stack>
           <Typography sx={{ fontSize: 24 }}>{studentProfile.name}</Typography>
-          {studentProfile.coursesTaken.map(course => CourseRenderer(course))}
-        </Stack>
-      )}
+          {coursesTaken.map(course => (
+            <CourseRenderer
+              courseID={course}
+              removeCourse={removeCourseFromStudent}
+            />
+          ))}
+        </Stack> : ''}
+
     </>
   );
 };
