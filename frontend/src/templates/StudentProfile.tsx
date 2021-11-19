@@ -1,14 +1,22 @@
 import { Button, Stack, Typography } from '@mui/material';
-import { IStudent } from '../interfaces/IStudent';
+import { usePage } from '../contexts/pageContext';
+import {CourseRenderer} from '../utils/CourseRenderer';
 
-export const StudentProfile = (props: IStudent) => {
-  const { id, name, coursesTaken } = props;
+export const StudentProfile = () => {
+  const { studentProfile, setCurrentPage } = usePage();
+  //remove only the courses taken lel
+
+  const removeCourseFromStudent = (id) => coursesTaken
+
   return (
     <>
-      <Stack>
-        <Typography sx={{ fontSize: 24 }}>{name}</Typography>
-        {coursesTaken.map(course => courseRenderer(course))}
-      </Stack>
+      <Button onClick={() => setCurrentPage('list')}>Back</Button>
+      {studentProfile && (
+        <Stack>
+          <Typography sx={{ fontSize: 24 }}>{studentProfile.name}</Typography>
+          {studentProfile.coursesTaken.map(course => CourseRenderer(course))}
+        </Stack>
+      )}
     </>
   );
 };

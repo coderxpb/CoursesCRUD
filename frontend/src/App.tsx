@@ -1,18 +1,14 @@
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import { HomePage } from './pages/HomePage';
-import { StudentPage } from './pages/StudentPage';
 import { CourseContextProvider } from './contexts/courseContext';
+import { PageContextProvider } from './contexts/pageContext';
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <PageContextProvider>
       <CourseContextProvider>
-        <Routes>
-          <Route path={'/*'} element={<HomePage />} />
-          <Route path={'/student*'} element={<StudentPage />} />
-        </Routes>
+        <HomePage />
       </CourseContextProvider>
-    </BrowserRouter>
+    </PageContextProvider>
   );
 };
 

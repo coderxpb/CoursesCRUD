@@ -1,14 +1,14 @@
 import { getRequest } from '../utils/httpHandlers';
 import { useEffect, useState } from 'react';
-import { CustomCard } from '../components/CustomCard';
+import { StudentCard } from '../components/CustomCard';
 import { IStudent } from '../interfaces/IStudent';
 import { deleteRequest } from '../utils/httpHandlers';
-import { Pagination, Stack, Typography } from '@mui/material';
+import { Container, Pagination, Stack, Typography } from '@mui/material';
 import React from 'react';
-import { useCourse } from '../contexts/courseContext'
+import { useCourse } from '../contexts/courseContext';
 
 export const StudentsList = () => {
-  const {courses} = useCourse()
+  const { courses } = useCourse();
   const [pageCount, setPageCount] = useState(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState(10);
@@ -24,7 +24,8 @@ export const StudentsList = () => {
   };
 
   //delete a student and refetch list
-  const deleteClicked = (id: string) => {
+  const deleteClicked = (e: React.SyntheticEvent,id: string) => {
+    e.preventDefault();
     deleteRequest('/students', { id }).then(data => {
       setLoadStudents(true);
     });
@@ -47,24 +48,27 @@ export const StudentsList = () => {
   }, [loadStudents]);
 
   return (
-    <>
-      <Stack spacing={3}>
+    <Container maxWidth={'sm'}>
+      <Stack spacing={3} sx={{ maxWidth: 600 }}>
         {studentListKeys && studentList && !loadStudents
           ? studentListKeys.map(key => (
-              <CustomCard key={key} id={key} clickable={true} onDeleteClicked={deleteClicked}>
+              <StudentCard
+                key={key}
+                studentData={studentList[key]}
+                onDeleteClicked={deleteClicked}>
                 <Typography sx={{ fontSize: 20 }}>{studentList[key].name}</Typography>
-              </CustomCard>
+              </StudentCard>
             ))
-          : 'loading'}
+          : ''}
       </Stack>
       {!loadStudents && (
         <Pagination
           count={pageCount}
           page={currentPage}
           onChange={changePage}
-          sx={{ display: 'flex', justifyContent: 'center', paddingTop: 2 }}
+          sx={{ display: 'flex', justifyContent: 'center', paddingTop: 2, maxWidth: 600 }}
         />
       )}
-    </>
+    </Container>
   );
 };
