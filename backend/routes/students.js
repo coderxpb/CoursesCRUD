@@ -18,6 +18,7 @@ router.get("/", (req, res) => {
 //return paginated student list
 router.get("/list", (req, res) => {
   let { page, size } = req.query;
+
   page = page || 1;
   size = size || 10;
 
@@ -79,7 +80,6 @@ router.delete("/courses", verifyToken, (req, res) => {
   jwt.verify(req.token, process.env.SECRET_KEY, (error) => {
     if (error) res.sendStatus(403);
     else {
-
       const studentID = req.body.studentID;
       const courseID = req.body.courseID;
       const updatedCourses = dataInstance[studentID].coursesTaken.filter(
@@ -107,9 +107,9 @@ router.post("/courses", verifyToken, (req, res) => {
 });
 
 //get courses of a specific student
-router.get('/courses',(req, res)=>{
+router.get("/courses", (req, res) => {
   const id = req.query.id;
-  res.json(dataInstance[id].coursesTaken)
-})
+  res.json(dataInstance[id].coursesTaken);
+});
 
 export { router as studentsRouter };

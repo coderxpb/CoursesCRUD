@@ -1,4 +1,4 @@
-import { Card, CardContent, IconButton, Stack, Typography } from '@mui/material';
+import { Button, Card, CardContent, IconButton, Stack, Typography } from '@mui/material'
 import React, { ReactElement } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IStudent } from '../interfaces/IStudent';
@@ -52,7 +52,7 @@ export const StudentCard = (props: IStudentCard) => {
 export const SubjectCard = (props: ISubjectCard) => {
   const { onDeleteClicked, name, id } = props;
   return (
-    <Card sx={{ background: 'lavender', maxWidth: 300 }}>
+    <Card sx={{ background: 'lavender', maxWidth: 350 }}>
       <Stack direction={'row'} sx={{ justifyContent: 'space-between' }}>
         <CardContent sx={{ background: 'powderblue', width: '100%' }}>
           {name}
@@ -64,6 +64,7 @@ export const SubjectCard = (props: ISubjectCard) => {
           <DeleteIcon />
         </IconButton>
       </Stack>
+
     </Card>
   );
 };

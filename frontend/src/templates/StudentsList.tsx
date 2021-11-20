@@ -1,17 +1,17 @@
 import { getRequest } from '../utils/httpHandlers';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react'
 import { StudentCard } from '../components/CustomCard';
 import { IStudent } from '../interfaces/IStudent';
 import { deleteRequest } from '../utils/httpHandlers';
-import { Container, Pagination, Stack, Typography } from '@mui/material';
+import { Box, Container, Pagination, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { useCourse } from '../contexts/courseContext';
 
 export const StudentsList = () => {
   const { courses } = useCourse();
-  const [pageCount, setPageCount] = useState(1);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageCount, setPageCount] = useState<number>(1);
+  const currentPage = useRef<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
   const [loadStudents, setLoadStudents] = useState(true);
   const [studentList, setStudentList] = useState<Record<string, IStudent>>();
   const [studentListKeys, setStudentListKeys] = useState<string[]>();
@@ -19,7 +19,7 @@ export const StudentsList = () => {
   const studentCardClicked = () => console.log('clicked');
 
   const changePage = (e: React.ChangeEvent<unknown>, value: number) => {
-    setCurrentPage(value);
+    currentPage.current = value;
     setLoadStudents(true);
   };
 
@@ -31,15 +31,13 @@ export const StudentsList = () => {
     });
   };
 
-
-
   //fetch students list data to be displayed in current page
   useEffect(() => {
     if (loadStudents) {
       (async () => {
         const data = await getRequest('/students/list', {
           size: pageSize,
-          page: currentPage,
+          page: currentPage.current,
         });
         setStudentListKeys(Object.getOwnPropertyNames(data.studentList));
         setStudentList(data.studentList);
@@ -63,12 +61,22 @@ export const StudentsList = () => {
                 </Typography>
               </StudentCard>
             ))
-          : ''}
+          : //temp hacky fix to not flash the entire screen on update
+            [...Array(pageSize)].map(() => (
+              <StudentCard
+                studentData={{ id: ' ', name: ' ', coursesTaken: [] }}
+                onDeleteClicked={deleteClicked}>
+                <Typography sx={{ fontSize: 20, visibility: 'hidden' }}>
+                  'kj'
+                </Typography>
+              </StudentCard>
+            ))}
       </Stack>
+
       {!loadStudents && (
         <Pagination
           count={pageCount}
-          page={currentPage}
+          page={currentPage.current}
           onChange={changePage}
           sx={{
             display: 'flex',
