@@ -7,8 +7,6 @@ import React, {
 } from 'react';
 import { deleteRequest, getRequest } from '../utils/httpHandlers';
 
-const removeKey = (k: string, { [k]: _, ...o }) => o;
-
 interface ISubject {
   name: string;
   id: string;
@@ -43,6 +41,7 @@ const CourseContextProvider = ({ children }: { children: ReactElement }) => {
     setLoadCourses(true);
   };
 
+  //remove course from course data
   const removeCourse = (id: string) => {
     deleteRequest('/courses', { id }).then(data => {
       setLoadCourses(true);

@@ -1,5 +1,4 @@
 import React, { createContext, ReactElement, useContext, useEffect, useState } from 'react'
-import { deleteRequest, getRequest } from '../utils/httpHandlers'
 import { IStudent } from '../interfaces/IStudent'
 
 type pageType = 'list' | 'profile';

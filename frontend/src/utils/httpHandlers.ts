@@ -7,10 +7,12 @@ type authorizedMethod = 'PUT' | 'DELETE' | 'POST';
 export const getRequest = async (url: string, params?: any) => {
   let paramURL = new URL(baseURL + url);
   if (params) {
-    Object.keys(params).forEach(key => paramURL.searchParams.append(key, params[key]));
+    Object.keys(params).forEach(key =>
+      paramURL.searchParams.append(key, params[key]),
+    );
   }
 
-  let response = await fetch(paramURL, {
+  let response = await fetch(paramURL.toString(), {
     method: 'GET',
     mode: 'cors',
     cache: 'no-cache',

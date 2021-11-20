@@ -4,7 +4,6 @@ import { CourseRenderer } from '../utils/CourseRenderer';
 import React, { useEffect, useState } from 'react';
 import { deleteRequest, getRequest, putRequest } from '../utils/httpHandlers';
 import { ArrowBack } from '@mui/icons-material';
-import _ from 'lodash';
 import { UpdateCourseDialog } from '../components/UpdateCourseDialog';
 
 export const StudentProfile = () => {
@@ -17,6 +16,13 @@ export const StudentProfile = () => {
   const openDialog = () => setCourseDialog(true);
   const closeDialog = () => setCourseDialog(false);
 
+  const addToChosenCourse = (courseID: string) =>
+    setChosenCourses(prev => (prev ? [...prev, courseID] : [courseID]));
+
+  const removeFromChosenCourse = (courseID: string) =>
+    setChosenCourses(prev => (prev ? prev.filter(c => c != courseID) : []));
+
+  //delete request to remove course (on delete clicked) from a student
   const removeCourseFromStudent = (courseID: string) => {
     deleteRequest('/students/courses', {
       studentID: studentProfile.id,
@@ -26,12 +32,7 @@ export const StudentProfile = () => {
     });
   };
 
-  const addToChosenCourse = (courseID: string) =>
-    setChosenCourses(prev => (prev ? [...prev, courseID] : [courseID]));
-
-  const removeFromChosenCourse = (courseID: string) =>
-    setChosenCourses(prev => (prev ? prev.filter(c => c != courseID) : []));
-
+  //put request to modify courses chosen by the student
   const updateCourse = () => {
     putRequest('/students/courses', {
       id: studentProfile.id,

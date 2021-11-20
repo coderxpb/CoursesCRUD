@@ -1,5 +1,5 @@
 import { getRequest } from '../utils/httpHandlers';
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react';
 import { StudentCard } from '../components/CustomCard';
 import { IStudent } from '../interfaces/IStudent';
 import { deleteRequest } from '../utils/httpHandlers';
@@ -16,14 +16,12 @@ export const StudentsList = () => {
   const [studentList, setStudentList] = useState<Record<string, IStudent>>();
   const [studentListKeys, setStudentListKeys] = useState<string[]>();
 
-  const studentCardClicked = () => console.log('clicked');
-
   const changePage = (e: React.ChangeEvent<unknown>, value: number) => {
     currentPage.current = value;
     setLoadStudents(true);
   };
 
-  //delete a student and refetch list
+  //delete a student and refetch student list
   const deleteClicked = (e: React.SyntheticEvent, id: string) => {
     e.preventDefault();
     deleteRequest('/students', { id }).then(data => {
@@ -38,12 +36,12 @@ export const StudentsList = () => {
         getRequest('/students/list', {
           size: pageSize,
           page: currentPage.current,
-        }).then((data)=>{
+        }).then(data => {
           setStudentListKeys(Object.getOwnPropertyNames(data.studentList));
           setStudentList(data.studentList);
           setPageCount(data.pageCount);
           setLoadStudents(false);
-        })
+        });
       })();
     }
   }, [loadStudents]);
