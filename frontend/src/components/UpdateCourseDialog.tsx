@@ -10,11 +10,12 @@ import {
 } from '@mui/material';
 import { useCourse } from '../contexts/courseContext';
 import _, { toNumber } from 'lodash'
+import React from 'react'
 
 interface IUpdateCourse {
-  initialCourse: number[] | undefined;
-  addCourse(id: string | number): void;
-  removeCourse(id: string | number): void;
+  initialCourse: string[] | undefined;
+  addCourse(id: string): void;
+  removeCourse(id: string): void;
   updateCourses(): void;
   closeDialog(): void;
   open: boolean;
@@ -45,7 +46,7 @@ export const UpdateCourseDialog = (props: IUpdateCourse) => {
             <FormControlLabel
               control={
                 <Checkbox
-                  defaultChecked={initialCourse? initialCourse.includes(toNumber(course.id)): false}
+                  defaultChecked={initialCourse? initialCourse.includes(course.id): false}
                   value={course.id}
                   onChange={onCheckboxChange}
                 />

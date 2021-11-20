@@ -1,33 +1,39 @@
-import React, { createContext, ReactElement, useContext, useEffect, useState } from 'react'
-import { deleteRequest, getRequest } from '../utils/httpHandlers'
+import React, {
+  createContext,
+  ReactElement,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import { deleteRequest, getRequest } from '../utils/httpHandlers';
 
 const removeKey = (k: string, { [k]: _, ...o }) => o;
 
-interface ISubject{
-  name: string,
-  id: number | string
+interface ISubject {
+  name: string;
+  id: string;
 }
 
 interface ContextType {
-  courses: Record<string | number, ISubject>;
+  courses: Record<string, ISubject>;
   addCourse(name: string): void;
-  removeCourse(id: string | number): void;
+  removeCourse(id: string): void;
 }
 
 const CourseContext = createContext<ContextType>({} as ContextType);
 
 const CourseContextProvider = ({ children }: { children: ReactElement }) => {
-  const [courses, setCourses] = useState<Record<string | number, ISubject>>({});
+  const [courses, setCourses] = useState<Record<string, ISubject>>({});
   const [loadCourses, setLoadCourses] = useState(true);
 
   //fetch course json
   useEffect(() => {
     if (loadCourses) {
       (async () => {
-        const data = await getRequest('/courses');
-        console.log(data);
-        setCourses(data)
-        setLoadCourses(false);
+        getRequest('/courses').then(data => {
+          setCourses(data);
+          setLoadCourses(false);
+        });
       })();
     }
   }, [loadCourses]);
@@ -37,7 +43,7 @@ const CourseContextProvider = ({ children }: { children: ReactElement }) => {
     setLoadCourses(true);
   };
 
-  const removeCourse = (id: string | number) => {
+  const removeCourse = (id: string) => {
     deleteRequest('/courses', { id }).then(data => {
       setLoadCourses(true);
     });

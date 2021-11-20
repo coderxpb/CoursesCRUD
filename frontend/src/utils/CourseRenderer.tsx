@@ -2,8 +2,8 @@ import { SubjectCard } from '../components/CustomCard';
 import { useCourse } from '../contexts/courseContext';
 
 interface IProps {
-  courseID: number | string;
-  removeCourse(courseID: number | string): void;
+  courseID: string;
+  removeCourse(courseID:string): void;
 }
 export const CourseRenderer = (props: IProps) => {
   const { courses } = useCourse();

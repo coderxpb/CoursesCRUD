@@ -5,19 +5,19 @@ import React, { useEffect, useState } from 'react';
 import { deleteRequest, getRequest, putRequest } from '../utils/httpHandlers';
 import { ArrowBack } from '@mui/icons-material';
 import _ from 'lodash';
-import { UpdateCourseDialog } from '../components/UpdateCourseDialog'
+import { UpdateCourseDialog } from '../components/UpdateCourseDialog';
 
 export const StudentProfile = () => {
   const { studentProfile, setCurrentPage } = usePage();
-  const [coursesTaken, setCoursesTaken] = useState<number[]>();
+  const [coursesTaken, setCoursesTaken] = useState<string[]>();
   const [loadCoursesTaken, setLoadCoursesTaken] = useState(true);
-  const [chosenCourses, setChosenCourses] = useState<number[]>();
+  const [chosenCourses, setChosenCourses] = useState<string[]>();
   const [courseDialog, setCourseDialog] = useState(false);
 
   const openDialog = () => setCourseDialog(true);
   const closeDialog = () => setCourseDialog(false);
 
-  const removeCourseFromStudent = (courseID: string | number) => {
+  const removeCourseFromStudent = (courseID: string) => {
     deleteRequest('/students/courses', {
       studentID: studentProfile.id,
       courseID,
@@ -26,10 +26,10 @@ export const StudentProfile = () => {
     });
   };
 
-  const addToChosenCourse = (courseID: number) =>
+  const addToChosenCourse = (courseID: string) =>
     setChosenCourses(prev => (prev ? [...prev, courseID] : [courseID]));
 
-  const removeFromChosenCourse = (courseID: number) =>
+  const removeFromChosenCourse = (courseID: string) =>
     setChosenCourses(prev => (prev ? prev.filter(c => c != courseID) : []));
 
   const updateCourse = () => {
@@ -45,13 +45,14 @@ export const StudentProfile = () => {
   useEffect(() => {
     if (loadCoursesTaken) {
       (async () => {
-        const data = await getRequest('/students/courses', {
+        getRequest('/students/courses', {
           id: studentProfile.id,
-        })
-        console.log(data);
-        setCoursesTaken(data);
-        setChosenCourses(data);
-        setLoadCoursesTaken(false);
+        }).then(data => {
+          console.log(data);
+          setCoursesTaken(data);
+          setChosenCourses(data);
+          setLoadCoursesTaken(false);
+        });
       })();
     }
   }, [loadCoursesTaken]);
@@ -75,7 +76,14 @@ export const StudentProfile = () => {
         ''
       )}
       <Button onClick={openDialog}>Update Courses</Button>
-      <UpdateCourseDialog initialCourse={chosenCourses} addCourse={addToChosenCourse} removeCourse={removeFromChosenCourse} updateCourses={updateCourse} closeDialog={closeDialog} open={courseDialog}/>
+      <UpdateCourseDialog
+        initialCourse={chosenCourses}
+        addCourse={addToChosenCourse}
+        removeCourse={removeFromChosenCourse}
+        updateCourses={updateCourse}
+        closeDialog={closeDialog}
+        open={courseDialog}
+      />
     </>
   );
 };

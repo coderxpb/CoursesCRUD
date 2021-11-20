@@ -17,6 +17,7 @@ router.get("/", (req, res) => {
 
 //return paginated student list
 router.get("/list", (req, res) => {
+  console.log('get paginated page')
   let { page, size } = req.query;
 
   page = page || 1;
@@ -56,6 +57,7 @@ router.delete("/", verifyToken, (req, res) => {
   jwt.verify(req.token, process.env.SECRET_KEY, (error) => {
     if (error) res.sendStatus(403);
     else {
+      console.log(`deleting student ${dataInstance[req.body.id].name}`)
       const { [req.body.id]: data, ...otherStudents } = dataInstance;
       dataInstance = otherStudents;
       res.json(`Deleted student`);
@@ -68,6 +70,7 @@ router.put("/courses", verifyToken, (req, res) => {
   jwt.verify(req.token, process.env.SECRET_KEY, (error) => {
     if (error) res.sendStatus(403);
     else {
+      console.log(`modifying courses of ${dataInstance[req.body.id].name}`)
       const id = req.body.id;
       dataInstance[id].coursesTaken = req.body.coursesTaken;
       res.json(`Changed courses of ${dataInstance[id].name}`);
@@ -80,6 +83,7 @@ router.delete("/courses", verifyToken, (req, res) => {
   jwt.verify(req.token, process.env.SECRET_KEY, (error) => {
     if (error) res.sendStatus(403);
     else {
+      console.log(`deleting course of ${dataInstance[req.body.studentID].name}`)
       const studentID = req.body.studentID;
       const courseID = req.body.courseID;
       const updatedCourses = dataInstance[studentID].coursesTaken.filter(
@@ -108,6 +112,7 @@ router.post("/courses", verifyToken, (req, res) => {
 
 //get courses of a specific student
 router.get("/courses", (req, res) => {
+  console.log(`fetching courses for ${dataInstance[req.query.id].name}`)
   const id = req.query.id;
   res.json(dataInstance[id].coursesTaken);
 });

@@ -35,14 +35,15 @@ export const StudentsList = () => {
   useEffect(() => {
     if (loadStudents) {
       (async () => {
-        const data = await getRequest('/students/list', {
+        getRequest('/students/list', {
           size: pageSize,
           page: currentPage.current,
-        });
-        setStudentListKeys(Object.getOwnPropertyNames(data.studentList));
-        setStudentList(data.studentList);
-        setPageCount(data.pageCount);
-        setLoadStudents(false);
+        }).then((data)=>{
+          setStudentListKeys(Object.getOwnPropertyNames(data.studentList));
+          setStudentList(data.studentList);
+          setPageCount(data.pageCount);
+          setLoadStudents(false);
+        })
       })();
     }
   }, [loadStudents]);

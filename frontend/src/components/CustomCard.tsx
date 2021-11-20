@@ -15,7 +15,7 @@ interface IStudentCard extends ICustomCard {
 
 interface ISubjectCard extends ICustomCard {
   name: string;
-  id: number | string;
+  id: string;
 }
 
 //custom student card
