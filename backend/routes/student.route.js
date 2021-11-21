@@ -1,14 +1,14 @@
 import express from "express";
 import { v4 as uuid } from "uuid";
-import { studentsData } from "../data/studentsData.js";
+import { studentData } from "../data/student.data.js";
 import jwt from "jsonwebtoken";
-import { verifyToken } from "./auth.js";
+import { verifyToken } from "./auth.route.js";
 import _ from "lodash";
 
 const router = express.Router();
 
 //create a temporary instance of studentsData
-let dataInstance = studentsData;
+let dataInstance = studentData;
 
 //return json containing all the students
 router.get("/", (req, res) => {

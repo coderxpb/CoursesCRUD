@@ -1,9 +1,9 @@
 import express, { json } from "express";
 import cors from "cors";
 import "dotenv/config";
-import { coursesRouter } from "./routes/courses.js";
-import { studentsRouter } from "./routes/students.js";
-import { authRouter } from "./routes/auth.js";
+import { coursesRouter } from "./routes/courses.route.js";
+import { studentsRouter } from "./routes/student.route.js";
+import { authRouter } from "./routes/auth.route.js";
 import nocache from 'nocache';
 
 const app = express();

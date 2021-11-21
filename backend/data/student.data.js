@@ -1,4 +1,4 @@
-const studentsData = {
+const studentData = {
   1: { id: 1, name: "Dalila", coursesTaken: ["1", "5", "3"] },
   2: { id: 2, name: "Blaire", coursesTaken: ["4", "3", "5", "1"] },
   3: { id: 3, name: "Nalani", coursesTaken: ["1"] },
@@ -204,4 +204,4 @@ const studentsData = {
   199: { id: 199, name: "Belia", coursesTaken: ["5", "1", "2", "3", "4"] },
 };
 
-export { studentsData };
+export { studentData };

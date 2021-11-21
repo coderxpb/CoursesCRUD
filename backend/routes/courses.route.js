@@ -1,7 +1,7 @@
 import express from "express";
 import { v4 as uuid } from "uuid";
-import { coursesData } from "../data/coursesData.js";
-import { verifyToken } from "./auth.js";
+import { coursesData } from "../data/courses.data.js";
+import { verifyToken } from "./auth.route.js";
 import jwt from "jsonwebtoken";
 
 const router = express.Router();
