@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import { coursesRouter } from "./routes/courses.route.js";
 import { studentsRouter } from "./routes/students.route.js";
 import { authRouter } from "./routes/auth.route.js";
+import { fillMockData } from './util/dummydata.js'
 
 const source = process.env.ATLAS_CONNECTION;
 const app = express();
@@ -27,6 +28,7 @@ connection.once("open", () => {
   app.listen(process.env.PORT, () => {
     console.log(`Listening on port ${process.env.PORT}`);
   });
+  //fillMockData();
 });
 
 connection.on(

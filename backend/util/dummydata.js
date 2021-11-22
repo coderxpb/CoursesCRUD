@@ -1,8 +1,7 @@
-import { names } from "./names";
-import { sample } from 'lodash/collection'
-import { random } from 'lodash/number'
-import { Student } from '../models/student.model'
-import { range } from 'lodash/util'
+import { names } from "./names.js";
+import { Student } from '../models/student.model.js'
+import _ from 'lodash'
+
 
 const courseIDs = [
   "619b355d9c5254bbf16ceea0",
@@ -15,14 +14,18 @@ const courseIDs = [
   "619b35b39c5254bbf16ceea7",
 ];
 
-_.range(0,100).forEach(async (current, index) => {
-  const name = sample(names)
-  const noOfCourses = random(0,5)
+export const fillMockData = () => {
+  _.range(0,100).forEach(async () => {
+    const name = _.sample(names)
+    const noOfCourses = _.random(1,5)
+    const coursesTaken = _.sampleSize(courseIDs, noOfCourses)
 
-  const result = await Student.create({
-    name,
-    coursesTaken: req.body.coursesTaken,
-  });
-})
+    const result = await Student.create({
+      name,
+      coursesTaken
+    });
+  })
+}
+
 
 
