@@ -1,26 +1,29 @@
 import { Button, IconButton, Stack, Typography } from '@mui/material';
 import { usePage } from '../contexts/pageContext';
-import { CourseRenderer } from '../utils/CourseRenderer';
 import React, { useEffect, useState } from 'react';
 import { deleteRequest, getRequest, putRequest } from '../utils/httpHandlers';
 import { ArrowBack } from '@mui/icons-material';
 import { UpdateCourseDialog } from '../components/UpdateCourseDialog';
+import { CourseCard } from '../components/CourseCard';
+import { ICourse } from '../interfaces/ICourse';
 
 export const StudentProfile = () => {
   const { studentProfile, setCurrentPage } = usePage();
-  const [coursesTaken, setCoursesTaken] = useState<string[]>();
+  const [coursesTaken, setCoursesTaken] = useState<ICourse[]>();
   const [loadCoursesTaken, setLoadCoursesTaken] = useState(true);
-  const [chosenCourses, setChosenCourses] = useState<string[]>();
+  const [chosenCourses, setChosenCourses] = useState<ICourse[]>();
   const [courseDialog, setCourseDialog] = useState(false);
 
   const openDialog = () => setCourseDialog(true);
   const closeDialog = () => setCourseDialog(false);
 
-  const addToChosenCourse = (courseID: string) =>
-    setChosenCourses(prev => (prev ? [...prev, courseID] : [courseID]));
+  const addToChosenCourse = (course: ICourse) =>
+    setChosenCourses(prev => (prev ? [...prev, course] : [course]));
 
-  const removeFromChosenCourse = (courseID: string) =>
-    setChosenCourses(prev => (prev ? prev.filter(c => c != courseID) : []));
+  const removeFromChosenCourse = (course: ICourse) =>
+    setChosenCourses(prev =>
+      prev ? prev.filter(c => c._id != course._id) : [],
+    );
 
   //delete request to remove course (on delete clicked) from a student
   const removeCourseFromStudent = (courseID: string) => {
@@ -35,7 +38,7 @@ export const StudentProfile = () => {
   //put request to modify courses chosen by the student
   const updateCourse = () => {
     putRequest('/students/courses', {
-      id: studentProfile._id,
+      _id: studentProfile._id,
       coursesTaken: chosenCourses,
     }).then(() => {
       setLoadCoursesTaken(true);
@@ -47,9 +50,8 @@ export const StudentProfile = () => {
     if (loadCoursesTaken) {
       (async () => {
         getRequest('/students/courses', {
-          id: studentProfile._id,
+          _id: studentProfile._id,
         }).then(data => {
-          console.log(data);
           setCoursesTaken(data);
           setChosenCourses(data);
           setLoadCoursesTaken(false);
@@ -60,23 +62,34 @@ export const StudentProfile = () => {
 
   return (
     <>
-      <IconButton onClick={() => setCurrentPage('list')}>
-        <ArrowBack />
-      </IconButton>
-      {studentProfile && coursesTaken ? (
-        <Stack spacing={2}>
-          <Typography sx={{ fontSize: 24 }}>{studentProfile.name}</Typography>
+      {studentProfile && coursesTaken && (
+        <Stack spacing={2} sx={{width: 340}}>
+          <Stack direction={'row'} spacing={2}>
+            <IconButton onClick={() => setCurrentPage('list')}>
+              <ArrowBack />
+            </IconButton>
+            <Typography
+              sx={{ fontSize: 32, fontFamily: 'Outfit', fontWeight: 600 }}>
+              {studentProfile.name}
+            </Typography>
+          </Stack>
+
           {coursesTaken.map(course => (
-            <CourseRenderer
-              courseID={course}
-              removeCourse={removeCourseFromStudent}
+            <CourseCard
+              key={course._id}
+              name={course.name}
+              _id={course._id}
+              onDeleteClicked={() => removeCourseFromStudent(course._id)}
             />
           ))}
+          <Button
+            onClick={openDialog}
+            sx={{width: 180, alignSelf: 'end'}}>
+            Update Courses
+          </Button>
         </Stack>
-      ) : (
-        ''
       )}
-      <Button onClick={openDialog}>Update Courses</Button>
+
       <UpdateCourseDialog
         initialCourses={chosenCourses}
         addToChosenCourses={addToChosenCourse}

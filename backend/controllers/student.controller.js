@@ -1,4 +1,6 @@
 import { Student } from "../models/student.model.js";
+import { Course } from "../models/course.model.js";
+
 import jwt from "jsonwebtoken";
 
 export const getAllStudents = async (req, res) => {
@@ -30,8 +32,9 @@ export const getPaginatedStudents = async (req, res) => {
 };
 
 export const getCoursesOfStudent = async (req, res) => {
-  const student = await Student.findById(req.query.id);
-  res.json(student.coursesTaken);
+  const student = await Student.findById(req.query._id);
+  const courses = await Course.find({ _id: { $in: student.coursesTaken } });
+  res.json(courses);
 };
 
 export const createNewStudent = async (req, res) => {
@@ -51,9 +54,8 @@ export const deleteStudent = async (req, res) => {
   jwt.verify(req.token, process.env.SECRET_KEY, async (error) => {
     if (error) res.sendStatus(403);
     else {
-      console.log(req.body._id)
       await Student.findByIdAndDelete(req.body._id);
-      console.log('deleted');
+
       res.json("Deleted student");
     }
   });
@@ -63,8 +65,7 @@ export const modifyCoursesTaken = async (req, res) => {
   jwt.verify(req.token, process.env.SECRET_KEY, async (error) => {
     if (error) res.sendStatus(403);
     else {
-      console.log(req.body.id, req.body.coursesTaken);
-      await Student.findByIdAndUpdate(req.body.id, {
+      await Student.findByIdAndUpdate(req.body._id, {
         coursesTaken: req.body.coursesTaken,
       });
       res.json("modified");

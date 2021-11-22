@@ -6,14 +6,10 @@ import React, {
   useState,
 } from 'react';
 import { deleteRequest, getRequest } from '../utils/httpHandlers';
-
-interface ISubject {
-  name: string;
-  _id: string;
-}
+import { ICourse } from '../interfaces/ICourse';
 
 interface ContextType {
-  courses: Record<string, ISubject>;
+  courses: ICourse[] | undefined;
   addCourse(name: string): void;
   removeCourse(_id: string): void;
 }
@@ -21,7 +17,7 @@ interface ContextType {
 const CourseContext = createContext<ContextType>({} as ContextType);
 
 const CourseContextProvider = ({ children }: { children: ReactElement }) => {
-  const [courses, setCourses] = useState<Record<string, ISubject>>({});
+  const [courses, setCourses] = useState<ICourse[]>();
   const [loadCourses, setLoadCourses] = useState(true);
 
   //fetch course json

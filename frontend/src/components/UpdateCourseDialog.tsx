@@ -11,11 +11,12 @@ import {
 import { useCourse } from '../contexts/courseContext';
 import _, { toNumber } from 'lodash';
 import React from 'react';
+import { ICourse } from '../interfaces/ICourse';
 
 interface IUpdateCourse {
-  initialCourses: string[] | undefined;
-  addToChosenCourses(id: string): void;
-  removeFromChosenCourses(id: string): void;
+  initialCourses: ICourse[] | undefined;
+  addToChosenCourses(course: ICourse): void;
+  removeFromChosenCourses(course: ICourse): void;
   updateCourses(): void;
   closeDialog(): void;
   open: boolean;
@@ -30,9 +31,7 @@ export const UpdateCourseDialog = (props: IUpdateCourse) => {
     closeDialog,
     updateCourses,
   } = props;
-
   const { courses } = useCourse();
-
   const onSave = () => {
     updateCourses();
     closeDialog();
@@ -42,25 +41,29 @@ export const UpdateCourseDialog = (props: IUpdateCourse) => {
     closeDialog();
   };
 
-  const onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const onCheckboxChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    course: ICourse,
+  ) =>
     e.target.checked
-      ? addToChosenCourses(e.target.value)
-      : removeFromChosenCourses(e.target.value);
+      ? addToChosenCourses(course)
+      : removeFromChosenCourses(course);
+
+  const isDefaultChecked = (course: ICourse, courses: ICourse[]) =>
+    courses.filter(c => c._id == course._id).length > 0;
 
   return (
     <Dialog open={open}>
-      <DialogTitle>Update Courses</DialogTitle>
-      <DialogContent>
+      <DialogTitle sx={{ fontSize: 22, fontFamily: 'Outfit', fontWeight: 500}}>Update Courses</DialogTitle>
+      <DialogContent sx={{ minWidth: 250 }}>
         <FormGroup>
           {_.map(courses, course => (
             <FormControlLabel
               control={
                 <Checkbox
-                  defaultChecked={
-                    initialCourses ? initialCourses.includes(course._id) : false
-                  }
+                  checked={isDefaultChecked(course, initialCourses || [])}
                   value={course._id}
-                  onChange={onCheckboxChange}
+                  onChange={e => onCheckboxChange(e, course)}
                 />
               }
               label={course.name}

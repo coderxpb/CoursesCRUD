@@ -26,8 +26,7 @@ const authorizedRequests = async (
   method: authorizedMethod,
   body?: object,
 ) => {
-  console.log(body);
-  console.log(JSON.stringify(body));
+
   let response = await fetch(baseURL + url, {
     method,
     mode: 'cors',

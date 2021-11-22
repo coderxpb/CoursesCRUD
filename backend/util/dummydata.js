@@ -15,8 +15,8 @@ const courseIDs = [
 ];
 
 export const fillMockData = () => {
-  _.range(0,100).forEach(async () => {
-    const name = _.sample(names)
+  _.range(0,300).forEach(async () => {
+    const name = _.sample(names) + ' ' + _.sample(names)
     const noOfCourses = _.random(1,5)
     const coursesTaken = _.sampleSize(courseIDs, noOfCourses)
 

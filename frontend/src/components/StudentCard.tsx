@@ -22,16 +22,16 @@ export const StudentCard = (props: IStudentCard) => {
   };
 
   return (
-    <Card sx={{ background: 'lavender', maxWidth: 600 }}>
+    <Card sx={{maxWidth: 600, '&:hover': { backgroundColor: 'rgba(0,0,255,0.1)', cursor: 'pointer'} }}>
       <Stack direction={'row'} sx={{ justifyContent: 'space-between' }}>
         <CardContent
-          sx={{ background: 'powderblue', width: '100%' }}
+          sx={{width: '100%' }}
           onClick={onCardClick}>
           {children}
         </CardContent>
         <IconButton
           disableRipple
-          sx={{ '&:hover': { backgroundColor: 'transparent' } }}
+          sx={{ background: 'rgba(255,0,0,0.5)', borderRadius: 0, '&:hover': { backgroundColor: 'rgba(255,0,0,0.7)'} }}
           onClick={e => onDeleteClicked(e, studentData._id)}>
           <DeleteIcon />
         </IconButton>
