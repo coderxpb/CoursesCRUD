@@ -16,8 +16,14 @@ export const getPaginatedStudents = async (req, res) => {
   const limit = parseInt(size);
   const skip = (parseInt(page) - 1) * limit;
 
-  const studentsList = await Student.find({"name": new RegExp(search)}, {}, { limit, skip });
-  const studentsCount = await Student.find({"name": new RegExp(search)}).count();
+  const studentsList = await Student.find(
+    { name: new RegExp(search) },
+    {},
+    { limit, skip }
+  );
+  const studentsCount = await Student.find({
+    name: new RegExp(search),
+  }).count();
   const pageCount = Math.ceil(studentsCount / limit);
 
   res.json({ studentsList, pageCount });
@@ -32,11 +38,11 @@ export const createNewStudent = async (req, res) => {
   jwt.verify(req.token, process.env.SECRET_KEY, async (error) => {
     if (error) res.sendStatus(403);
     else {
-      const result = await Student.create({
+      await Student.create({
         name: req.body.name,
         coursesTaken: req.body.coursesTaken,
       });
-      res.end(`Added new student ${req.body.name}`);
+      res.json(`Added new student ${req.body.name}`);
     }
   });
 };
@@ -45,8 +51,10 @@ export const deleteStudent = async (req, res) => {
   jwt.verify(req.token, process.env.SECRET_KEY, async (error) => {
     if (error) res.sendStatus(403);
     else {
-      await Student.findByIdAndDelete(req.body.id);
-      res.end("Deleted student");
+      console.log(req.body._id)
+      await Student.findByIdAndDelete(req.body._id);
+      console.log('deleted');
+      res.json("Deleted student");
     }
   });
 };
@@ -59,7 +67,7 @@ export const modifyCoursesTaken = async (req, res) => {
       await Student.findByIdAndUpdate(req.body.id, {
         coursesTaken: req.body.coursesTaken,
       });
-      res.end("modified");
+      res.json("modified");
     }
   });
 };
@@ -73,7 +81,7 @@ export const addCourseToStudent = async (req, res) => {
       await Student.findByIdAndUpdate(studentID, {
         $addToSet: { coursesTaken: courseID },
       });
-      res.end("added");
+      res.json("added");
     }
   });
 };
@@ -87,7 +95,7 @@ export const removeCourseFromStudent = async (req, res) => {
       await Student.findByIdAndUpdate(studentID, {
         $pullAll: { coursesTaken: [courseID] },
       });
-      res.end("removed");
+      res.json("removed");
     }
   });
 };

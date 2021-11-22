@@ -9,20 +9,28 @@ import {
   FormGroup,
 } from '@mui/material';
 import { useCourse } from '../contexts/courseContext';
-import _, { toNumber } from 'lodash'
-import React from 'react'
+import _, { toNumber } from 'lodash';
+import React from 'react';
 
 interface IUpdateCourse {
-  initialCourse: string[] | undefined;
-  addCourse(id: string): void;
-  removeCourse(id: string): void;
+  initialCourses: string[] | undefined;
+  addToChosenCourses(id: string): void;
+  removeFromChosenCourses(id: string): void;
   updateCourses(): void;
   closeDialog(): void;
   open: boolean;
 }
 
 export const UpdateCourseDialog = (props: IUpdateCourse) => {
-  const { open, initialCourse, closeDialog, updateCourses, addCourse, removeCourse } = props;
+  const {
+    open,
+    initialCourses,
+    addToChosenCourses,
+    removeFromChosenCourses,
+    closeDialog,
+    updateCourses,
+  } = props;
+
   const { courses } = useCourse();
 
   const onSave = () => {
@@ -35,7 +43,9 @@ export const UpdateCourseDialog = (props: IUpdateCourse) => {
   };
 
   const onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    e.target.checked ? addCourse(e.target.value) : removeCourse(e.target.value);
+    e.target.checked
+      ? addToChosenCourses(e.target.value)
+      : removeFromChosenCourses(e.target.value);
 
   return (
     <Dialog open={open}>
@@ -46,8 +56,10 @@ export const UpdateCourseDialog = (props: IUpdateCourse) => {
             <FormControlLabel
               control={
                 <Checkbox
-                  defaultChecked={initialCourse? initialCourse.includes(course.id): false}
-                  value={course.id}
+                  defaultChecked={
+                    initialCourses ? initialCourses.includes(course._id) : false
+                  }
+                  value={course._id}
                   onChange={onCheckboxChange}
                 />
               }

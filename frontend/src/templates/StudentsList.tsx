@@ -1,30 +1,29 @@
 import { getRequest } from '../utils/httpHandlers';
 import { useEffect, useRef, useState } from 'react';
-import { StudentCard } from '../components/CustomCard';
+import { StudentCard } from '../components/StudentCard';
 import { IStudent } from '../interfaces/IStudent';
 import { deleteRequest } from '../utils/httpHandlers';
-import { Box, Container, Pagination, Stack, Typography } from '@mui/material';
+import { Container, Pagination, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { useCourse } from '../contexts/courseContext';
 
 export const StudentsList = () => {
   const { courses } = useCourse();
   const [pageCount, setPageCount] = useState<number>(1);
-  const currentPage = useRef<number>(1);
+  const [currentPageNo, setCurrentPageNo] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [loadStudents, setLoadStudents] = useState(true);
-  const [studentList, setStudentList] = useState<Record<string, IStudent>>();
-  const [studentListKeys, setStudentListKeys] = useState<string[]>();
+  const [studentsList, setStudentsList] = useState<IStudent[]>();
 
   const changePage = (e: React.ChangeEvent<unknown>, value: number) => {
-    currentPage.current = value;
+    setCurrentPageNo(value);
     setLoadStudents(true);
   };
 
   //delete a student and refetch student list
-  const deleteClicked = (e: React.SyntheticEvent, id: string) => {
+  const deleteClicked = (e: React.SyntheticEvent, _id: string) => {
     e.preventDefault();
-    deleteRequest('/students', { id }).then(data => {
+    deleteRequest('/students', { _id }).then(data => {
       setLoadStudents(true);
     });
   };
@@ -35,12 +34,16 @@ export const StudentsList = () => {
       (async () => {
         getRequest('/students/list', {
           size: pageSize,
-          page: currentPage.current,
+          page: currentPageNo
         }).then(data => {
-          setStudentListKeys(Object.getOwnPropertyNames(data.studentList));
-          setStudentList(data.studentList);
+          //setStudentListKeys(Object.getOwnPropertyNames(data.studentList));
+          console.log(data);
+          setStudentsList(data.studentsList);
           setPageCount(data.pageCount);
-          setLoadStudents(false);
+          if (currentPageNo > data.pageCount) {
+            setCurrentPageNo(data.pageCount);
+            setLoadStudents(true);
+          } else setLoadStudents(false);
         });
       })();
     }
@@ -49,33 +52,21 @@ export const StudentsList = () => {
   return (
     <Container maxWidth={'sm'}>
       <Stack spacing={3} sx={{ maxWidth: 600 }}>
-        {studentListKeys && studentList && !loadStudents
-          ? studentListKeys.map(key => (
-              <StudentCard
-                key={key}
-                studentData={studentList[key]}
-                onDeleteClicked={deleteClicked}>
-                <Typography sx={{ fontSize: 20 }}>
-                  {studentList[key].name}
-                </Typography>
-              </StudentCard>
-            ))
-          : //temp hacky fix to not flash the entire screen on update
-            [...Array(pageSize)].map(() => (
-              <StudentCard
-                studentData={{ id: ' ', name: ' ', coursesTaken: [] }}
-                onDeleteClicked={deleteClicked}>
-                <Typography sx={{ fontSize: 20, visibility: 'hidden' }}>
-                  'kj'
-                </Typography>
-              </StudentCard>
-            ))}
+        {studentsList &&
+          studentsList.map(student => (
+            <StudentCard
+              key={student._id}
+              studentData={student}
+              onDeleteClicked={deleteClicked}>
+              <Typography sx={{ fontSize: 20 }}>{student.name}</Typography>
+            </StudentCard>
+          ))}
       </Stack>
 
-      {!loadStudents && (
+      {pageCount && (
         <Pagination
           count={pageCount}
-          page={currentPage.current}
+          page={currentPageNo}
           onChange={changePage}
           sx={{
             display: 'flex',

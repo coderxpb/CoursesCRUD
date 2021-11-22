@@ -25,7 +25,7 @@ export const StudentProfile = () => {
   //delete request to remove course (on delete clicked) from a student
   const removeCourseFromStudent = (courseID: string) => {
     deleteRequest('/students/courses', {
-      studentID: studentProfile.id,
+      studentID: studentProfile._id,
       courseID,
     }).then(data => {
       setLoadCoursesTaken(true);
@@ -35,7 +35,7 @@ export const StudentProfile = () => {
   //put request to modify courses chosen by the student
   const updateCourse = () => {
     putRequest('/students/courses', {
-      id: studentProfile.id,
+      id: studentProfile._id,
       coursesTaken: chosenCourses,
     }).then(() => {
       setLoadCoursesTaken(true);
@@ -47,7 +47,7 @@ export const StudentProfile = () => {
     if (loadCoursesTaken) {
       (async () => {
         getRequest('/students/courses', {
-          id: studentProfile.id,
+          id: studentProfile._id,
         }).then(data => {
           console.log(data);
           setCoursesTaken(data);
@@ -78,9 +78,9 @@ export const StudentProfile = () => {
       )}
       <Button onClick={openDialog}>Update Courses</Button>
       <UpdateCourseDialog
-        initialCourse={chosenCourses}
-        addCourse={addToChosenCourse}
-        removeCourse={removeFromChosenCourse}
+        initialCourses={chosenCourses}
+        addToChosenCourses={addToChosenCourse}
+        removeFromChosenCourses={removeFromChosenCourse}
         updateCourses={updateCourse}
         closeDialog={closeDialog}
         open={courseDialog}

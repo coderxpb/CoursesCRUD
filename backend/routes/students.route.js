@@ -1,9 +1,5 @@
 import express from "express";
-import { v4 as uuid } from "uuid";
-import { studentsData } from "../data/students.data.js";
-import jwt from "jsonwebtoken";
 import { verifyToken } from "./auth.route.js";
-import _ from "lodash";
 import {
   addCourseToStudent,
   createNewStudent,
@@ -12,16 +8,14 @@ import {
 } from '../controllers/student.controller.js'
 const router = express.Router();
 
-//create a temporary instance of studentsData
-let dataInstance = studentsData;
 
 //return json containing all the students
 router.get("/", getAllStudents);
 
-//return paginated student list
+//return paginated student list optionally with name query
 router.get("/list", getPaginatedStudents);
 
-//add a new student
+//create a new student
 router.post("/", verifyToken, createNewStudent);
 
 //delete student

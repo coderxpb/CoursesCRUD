@@ -1,5 +1,5 @@
 export interface IStudent{
-  id: string,
+  _id: string,
   name: string,
   coursesTaken: string[],
 }

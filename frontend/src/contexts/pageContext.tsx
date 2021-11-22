@@ -14,7 +14,7 @@ const PageContext = createContext<ContextType>({} as ContextType);
 
 const PageContextProvider = ({ children }: { children: ReactElement }) => {
   const [currentPage, setCurrentPage] = useState<pageType>('list');
-  const [studentProfile, setStudentProfile] = useState<IStudent>({id: '', name: '', coursesTaken: []});
+  const [studentProfile, setStudentProfile] = useState<IStudent>({_id: '', name: '', coursesTaken: []});
 
   return (
     <PageContext.Provider

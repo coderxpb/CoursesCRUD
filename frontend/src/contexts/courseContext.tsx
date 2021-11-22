@@ -9,13 +9,13 @@ import { deleteRequest, getRequest } from '../utils/httpHandlers';
 
 interface ISubject {
   name: string;
-  id: string;
+  _id: string;
 }
 
 interface ContextType {
   courses: Record<string, ISubject>;
   addCourse(name: string): void;
-  removeCourse(id: string): void;
+  removeCourse(_id: string): void;
 }
 
 const CourseContext = createContext<ContextType>({} as ContextType);
@@ -37,16 +37,15 @@ const CourseContextProvider = ({ children }: { children: ReactElement }) => {
   }, [loadCourses]);
 
   const addCourse = (name: string) => {
-    //api call to add course
+    //@TODO: add an api call to add course later
     setLoadCourses(true);
   };
 
   //remove course from course data
-  const removeCourse = (id: string) => {
-    deleteRequest('/courses', { id }).then(data => {
+  const removeCourse = (_id: string) => {
+    deleteRequest('/courses', { _id }).then(data => {
       setLoadCourses(true);
     });
-    setLoadCourses(true);
   };
 
   return (

@@ -1,9 +1,9 @@
-import { SubjectCard } from '../components/CustomCard';
+import { SubjectCard } from '../components/SubjectCard';
 import { useCourse } from '../contexts/courseContext';
 
 interface IProps {
   courseID: string;
-  removeCourse(courseID:string): void;
+  removeCourse(courseID: string): void;
 }
 
 //takes a courseID and renders a card after getting the name from the courseContext
@@ -15,8 +15,10 @@ export const CourseRenderer = (props: IProps) => {
     <SubjectCard
       key={courseID}
       name={courses[courseID].name}
-      id={courseID}
+      _id={courseID}
       onDeleteClicked={() => removeCourse(courseID)}
     />
-  ) : <div></div>;
+  ) : (
+    <div></div>
+  );
 };
