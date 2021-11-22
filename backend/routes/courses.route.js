@@ -3,6 +3,7 @@ import { v4 as uuid } from "uuid";
 import { coursesData } from "../data/courses.data.js";
 import { verifyToken } from "./auth.route.js";
 import jwt from "jsonwebtoken";
+import { getAllCourses } from "../controllers/course.controller.js";
 
 const router = express.Router();
 
@@ -10,9 +11,7 @@ const router = express.Router();
 let dataInstance = coursesData;
 
 //return json containing all the courses
-router.get("/", (req, res) => {
-  res.json(dataInstance);
-});
+router.get("/", getAllCourses);
 
 //add a new course
 router.post("/", verifyToken, (req, res) => {

@@ -1,19 +1,17 @@
 import express from "express";
 import { v4 as uuid } from "uuid";
-import { studentData } from "../data/student.data.js";
+import { studentsData } from "../data/students.data.js";
 import jwt from "jsonwebtoken";
 import { verifyToken } from "./auth.route.js";
 import _ from "lodash";
-
+import { createNewStudent, getAllStudents } from '../controllers/student.controller.js'
 const router = express.Router();
 
 //create a temporary instance of studentsData
-let dataInstance = studentData;
+let dataInstance = studentsData;
 
 //return json containing all the students
-router.get("/", (req, res) => {
-  res.json(dataInstance);
-});
+router.get("/", getAllStudents);
 
 //return paginated student list
 router.get("/list", (req, res) => {
@@ -36,6 +34,8 @@ router.get("/list", (req, res) => {
 });
 
 //add a new student
+router.post("/", verifyToken, createNewStudent);
+
 router.post("/", verifyToken, (req, res) => {
   jwt.verify(req.token, process.env.SECRET_KEY, (error) => {
     if (error) res.sendStatus(403);
