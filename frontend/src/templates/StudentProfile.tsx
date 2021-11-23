@@ -8,7 +8,7 @@ import { CourseCard } from '../components/CourseCard';
 import { ICourse } from '../interfaces/ICourse';
 
 export const StudentProfile = () => {
-  const { studentProfile, setCurrentPage } = usePage();
+  const { studentProfile, setCurrentPageType } = usePage();
   const [coursesTaken, setCoursesTaken] = useState<ICourse[]>();
   const [loadCoursesTaken, setLoadCoursesTaken] = useState(true);
   const [chosenCourses, setChosenCourses] = useState<ICourse[]>();
@@ -63,9 +63,9 @@ export const StudentProfile = () => {
   return (
     <>
       {studentProfile && coursesTaken && (
-        <Stack spacing={2} sx={{width: 340}}>
+        <Stack spacing={2} sx={{ width: 340 }}>
           <Stack direction={'row'} spacing={2}>
-            <IconButton onClick={() => setCurrentPage('list')}>
+            <IconButton onClick={() => setCurrentPageType('list')}>
               <ArrowBack />
             </IconButton>
             <Typography
@@ -82,9 +82,7 @@ export const StudentProfile = () => {
               onDeleteClicked={() => removeCourseFromStudent(course._id)}
             />
           ))}
-          <Button
-            onClick={openDialog}
-            sx={{width: 180, alignSelf: 'end'}}>
+          <Button onClick={openDialog} sx={{ width: 180, alignSelf: 'end' }}>
             Update Courses
           </Button>
         </Stack>

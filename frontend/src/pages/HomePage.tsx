@@ -4,12 +4,12 @@ import { usePage } from '../contexts/pageContext';
 import { StudentProfile } from '../templates/StudentProfile';
 
 export const HomePage = () => {
-  const { currentPage } = usePage();
+  const { currentPageType } = usePage();
 
   return (
     <Container maxWidth={'lg'} sx={{ paddingTop: 5 }}>
-      {currentPage == 'list' && <StudentsList />}
-      {currentPage == 'profile' && <StudentProfile />}
+      {currentPageType == 'list' && <StudentsList />}
+      {currentPageType == 'profile' && <StudentProfile />}
     </Container>
   );
 };

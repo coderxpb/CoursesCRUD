@@ -11,14 +11,14 @@ interface IStudentCard {
 }
 
 export const StudentCard = (props: IStudentCard) => {
-  const { setCurrentPage, setStudentProfile } = usePage();
+  const { setCurrentPageType, setStudentProfile } = usePage();
   const { studentData, onDeleteClicked, children } = props;
 
 
   //on card click change page to student profile page with studentData
   const onCardClick = () => {
     setStudentProfile(studentData);
-    setCurrentPage('profile');
+    setCurrentPageType('profile');
   };
 
   return (

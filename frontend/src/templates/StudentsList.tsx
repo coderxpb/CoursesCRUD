@@ -4,8 +4,10 @@ import { StudentCard } from '../components/StudentCard';
 import { IStudent } from '../interfaces/IStudent';
 import { deleteRequest } from '../utils/httpHandlers';
 import {
-  Container, FormControl,
-  Input, InputLabel,
+  Container,
+  FormControl,
+  Input,
+  InputLabel,
   MenuItem,
   Pagination,
   Select,
@@ -13,15 +15,13 @@ import {
   Stack,
   TextField,
   Typography,
-} from '@mui/material'
+} from '@mui/material';
 import React from 'react';
-import { useCourse } from '../contexts/courseContext';
+import { usePage } from '../contexts/pageContext';
 
 export const StudentsList = () => {
-  const { courses } = useCourse();
+  const { currentPageNo, setCurrentPageNo, pageSize, setPageSize } = usePage();
   const [pageCount, setPageCount] = useState<number>(1);
-  const [currentPageNo, setCurrentPageNo] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(8);
   const [loadStudents, setLoadStudents] = useState(true);
   const [studentsList, setStudentsList] = useState<IStudent[]>();
   const [search, setSearch] = useState<String>('');
@@ -48,7 +48,6 @@ export const StudentsList = () => {
           page: currentPageNo,
           search: search,
         }).then(data => {
-          //setStudentListKeys(Object.getOwnPropertyNames(data.studentList));
           setStudentsList(data.studentsList);
           setPageCount(data.pageCount);
           if (currentPageNo > data.pageCount) {
@@ -60,7 +59,7 @@ export const StudentsList = () => {
     }
   }, [loadStudents, search]);
 
-  const inputHandler = (
+  const searchInputHandler = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     e.preventDefault();
@@ -69,20 +68,22 @@ export const StudentsList = () => {
     console.log(e.target.value);
   };
 
-  const changePageSize = (e: SelectChangeEvent<T>) => {
+  const changePageSize = (e: SelectChangeEvent<number>) => {
     e.preventDefault();
     if (e.target.value != pageSize) {
-      setPageSize(e.target.value);
+      setPageSize(e.target.value as number);
       setLoadStudents(true);
     }
   };
 
   return (
     <Container maxWidth={'sm'}>
-      <Stack direction={'row'} sx={{ justifyContent: 'space-between', maxWidth: 508 }}>
+      <Stack
+        direction={'row'}
+        sx={{ justifyContent: 'space-between', maxWidth: 508 }}>
         <Input
           placeholder={'search'}
-          onChange={inputHandler}
+          onChange={searchInputHandler}
           sx={{ marginBottom: 2 }}
         />
         <FormControl sx={{ m: 1, minWidth: 40 }}>
