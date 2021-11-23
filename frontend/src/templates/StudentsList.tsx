@@ -4,13 +4,16 @@ import { StudentCard } from '../components/StudentCard';
 import { IStudent } from '../interfaces/IStudent';
 import { deleteRequest } from '../utils/httpHandlers';
 import {
-  Container,
-  Input,
+  Container, FormControl,
+  Input, InputLabel,
+  MenuItem,
   Pagination,
+  Select,
+  SelectChangeEvent,
   Stack,
   TextField,
   Typography,
-} from '@mui/material';
+} from '@mui/material'
 import React from 'react';
 import { useCourse } from '../contexts/courseContext';
 
@@ -18,7 +21,7 @@ export const StudentsList = () => {
   const { courses } = useCourse();
   const [pageCount, setPageCount] = useState<number>(1);
   const [currentPageNo, setCurrentPageNo] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageSize, setPageSize] = useState<number>(8);
   const [loadStudents, setLoadStudents] = useState(true);
   const [studentsList, setStudentsList] = useState<IStudent[]>();
   const [search, setSearch] = useState<String>('');
@@ -57,17 +60,48 @@ export const StudentsList = () => {
     }
   }, [loadStudents, search]);
 
-  // const inputHandler = (
-  //   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  // ) => {
-  //   e.preventDefault();
-  //   setSearch(e.target.value);
-  //   setLoadStudents(true);
-  //   console.log(e.target.value);
-  // };
+  const inputHandler = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    e.preventDefault();
+    setSearch(e.target.value);
+    setLoadStudents(true);
+    console.log(e.target.value);
+  };
+
+  const changePageSize = (e: SelectChangeEvent<T>) => {
+    e.preventDefault();
+    if (e.target.value != pageSize) {
+      setPageSize(e.target.value);
+      setLoadStudents(true);
+    }
+  };
 
   return (
-    <Container maxWidth={'sm'} sx={{ paddingBottom: 4 }}>
+    <Container maxWidth={'sm'}>
+      <Stack direction={'row'} sx={{ justifyContent: 'space-between', maxWidth: 508 }}>
+        <Input
+          placeholder={'search'}
+          onChange={inputHandler}
+          sx={{ marginBottom: 2 }}
+        />
+        <FormControl sx={{ m: 1, minWidth: 40 }}>
+          <InputLabel id="demo-simple-select-autowidth-label">Show</InputLabel>
+          <Select
+            value={pageSize}
+            onChange={changePageSize}
+            autoWidth
+            size={'small'}
+            label="Show">
+            <MenuItem value={4}>4</MenuItem>
+            <MenuItem value={8}>8</MenuItem>
+            <MenuItem value={12}>12</MenuItem>
+            <MenuItem value={16}>16</MenuItem>
+            <MenuItem value={20}>20</MenuItem>
+          </Select>
+        </FormControl>
+      </Stack>
+
       <Stack spacing={3} sx={{ maxWidth: 500 }}>
         {studentsList &&
           studentsList.map(student => (

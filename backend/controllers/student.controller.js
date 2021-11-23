@@ -12,8 +12,8 @@ export const getAllStudents = async (req, res) => {
 export const getPaginatedStudents = async (req, res) => {
   let { page, size, search } = req.query;
 
-  page = page || 1;
-  size = size || 10;
+  page = page ? (page > 1 ? page : 1) : 1;
+  size = size || 6;
 
   const limit = parseInt(size);
   const skip = (parseInt(page) - 1) * limit;

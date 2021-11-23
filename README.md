@@ -1,4 +1,4 @@
-Fullstack SPA written in ReactJS, TypeScript, Node and Express. Uses local data as temporary database instance.
+Fullstack SPA written in ReactJS, TypeScript, Node and Express. Uses MongoDB as the database.
 
 Instructions to run:
 1. Clone the repository
